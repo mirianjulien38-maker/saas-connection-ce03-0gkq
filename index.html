@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="mg" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaSConnect - Ny Vahaolana SaaS ho An'ny Fivoaran'ny Orinasanao</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .dark .bg-gradient-hero {
+            background-image: linear-gradient(to right top, #0f0a20, #1a0f3d, #29115b, #3d0c7a, #54009a);
+        }
+        .bg-gradient-hero {
+            background-image: linear-gradient(to right top, #f0f8ff, #ddebf7, #cbe0ef, #bcd4e7, #afcbe0);
+        }
+        .dark .text-gradient {
+            background: linear-gradient(45deg, #a78bfa, #8b5cf6, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient {
+            background: linear-gradient(45deg, #1d4ed8, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(180deg, rgba(82,0,154,0.7) 0%, rgba(200,80,192,0.7) 100%);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            z-index: 0;
+            animation: blob-bounce 10s infinite;
+        }
+
+        @keyframes blob-bounce {
+            0%, 100% { transform: scale(1) translate(0, 0); }
+            25% { transform: scale(1.1) translate(20px, -30px); }
+            50% { transform: scale(0.9) translate(-40px, 50px); }
+            75% { transform: scale(1.05) translate(30px, 30px); }
+        }
+        .dark-mode-toggle {
+            transition: all 0.3s ease;
+        }
+
+        /* Styles for the modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .dark .modal-content {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .dark .close-button {
+            color: #e2e8f0;
+        }
+        .dark .close-button:hover,
+        .dark .close-button:focus {
+            color: #ffffff;
+        }
+
+        /* Animation for sections on scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
+                            500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+                            950: '#172554'
+                        },
+                        secondary: {
+                            50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6',
+                            500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843',
+                            950: '#500724'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
+
+    <!-- Header sy Fitaovan'ny Navigation -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm dark:shadow-lg transition-colors duration-300">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#home" class="flex items-center space-x-2">
+                <i class="fas fa-rocket text-3xl text-primary-600 dark:text-primary-400"></i>
+                <span class="text-2xl font-bold text-gray-900 dark:text-gray-50">SaaSConnect</span>
+            </a>
+
+            <!-- Menu eo amin'ny desktop -->
+            <ul class="hidden md:flex space-x-8 items-center">
+                <li><a href="#features" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Endrika Manokana</a></li>
+                <li><a href="#solutions" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Vahaolana</a></li>
+                <li><a href="#about" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Momba Anay</a></li>
+                <li><a href="#pricing" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Vidin'ny Serivisy</a></li>
+                <li><a href="#contact" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Fifandraisana</a></li>
+                <li>
+                    <button id="darkModeToggle" class="dark-mode-toggle p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <i class="fas fa-moon hidden dark:block"></i>
+                        <i class="fas fa-sun dark:hidden"></i>
+                    </button>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="openModal('signupModal')" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-md">
+                        Manomboka izao
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Hamburger icon ho an'ny finday -->
+            <div class="md:hidden flex items-center space-x-4">
+                <button id="darkModeToggleMobile" class="dark-mode-toggle p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+                    <i class="fas fa-moon hidden dark:block"></i>
+                    <i class="fas fa-sun dark:hidden"></i>
+                </button>
+                <button id="hamburgerBtn" class="text-gray-800 dark:text-gray-200 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Menu an-tsipika (mobile) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 absolute w-full left-0 py-4 shadow-lg transition-all duration-300 ease-in-out transform -translate-y-full opacity-0">
+            <ul class="flex flex-col items-center space-y-4">
+                <li><a href="#features" class="block py-2 text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" onclick="toggleMobileMenu()">Endrika Manokana</a></li>
+                <li><a href="#solutions" class="block py-2 text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" onclick="toggleMobileMenu()">Vahaolana</a></li>
+                <li><a href="#about" class="block py-2 text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" onclick="toggleMobileMenu()">Momba Anay</a></li>
+                <li><a href="#pricing" class="block py-2 text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" onclick="toggleMobileMenu()">Vidin'ny Serivisy</a></li>
+                <li><a href="#contact" class="block py-2 text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200" onclick="toggleMobileMenu()">Fifandraisana</a></li>
+                <li>
+                    <a href="javascript:void(0)" onclick="openModal('signupModal'); toggleMobileMenu();" class="block bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                        Manomboka izao
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- Fizarana Mialoha (Hero Section) -->
+        <section id="home" class="relative overflow-hidden py-24 md:py-32 bg-gradient-hero dark:bg-gradient-hero flex items-center justify-center min-h-screen">
+            <div class="blob absolute top-1/4 left-1/4 animate-pulse-slow"></div>
+            <div class="blob absolute bottom-1/4 right-1/4 animate-pulse-slow animation-delay-2s"></div>
+
+            <div class="container mx-auto px-6 text-center z-10">
+                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-gray-900 dark:text-gray-50 drop-shadow-lg">
+                    Amboary ny Hoavin'ny Orinasanao amin'ny <span class="text-gradient">SaaSConnect</span>
+                </h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-10 text-gray-700 dark:text-gray-300">
+                    Vahaolana rindrambaiko mandroso sy mora ampiasaina natao hanamafisana ny fizotran'ny asanao, hanatsarana ny famokaram-piasana, ary hampitombo ny varotrao.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="javascript:void(0)" onclick="openModal('signupModal')" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">
+                        Atombohy maimaim-poana ny andramana <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#features" class="bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-300 border border-primary-600 dark:border-primary-300 hover:bg-primary-50 dark:hover:bg-gray-600 hover:text-primary-700 dark:hover:text-primary-200 font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-xl">
+                        Mianara bebe kokoa <i class="fas fa-info-circle ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Mampiseho Ny Endrika Manokana (Features Section) -->
+        <section id="features" class="py-16 md:py-24 bg-white dark:bg-gray-900 animate-on-scroll">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-900 dark:text-gray-50">
+                    <span class="text-gradient">Endrika Manokana</span> Hanamafisana ny Orinasanao
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Feature Card 1 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Famakafakana Mandroso</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Jereo mazava ny angon-drakitrao miaraka amin'ny dashboard intuitive. Raiso fanapahan-kevitra tsara miorina amin'ny fampahalalana marina.</p>
+                    </div>
+
+                    <!-- Feature Card 2 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Automatisitra ny Fizotranao</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Atsaharo ny asa miverimberina ary ampifantoha ny ekipa amin'izay tena ilaina. Mandeha ho azy ny asa manahirana.</p>
+                    </div>
+
+                    <!-- Feature Card 3 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Fiaraha-miasa Tsara</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Ampifandraiso ny ekipa, zarao ny fampahalalana, ary miara-miasa tsy misy fanelingelenana, na aiza na aiza misy anareo.</p>
+                    </div>
+
+                    <!-- Feature Card 4 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Fiarovana Mazava</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Arovy ny angon-drakitrao sarobidy amin'ny teknolojia fiarovana mahery vaika sy fanarahana ny fenitra iraisam-pirenena.</p>
+                    </div>
+
+                    <!-- Feature Card 5 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Mora Ampiasaina Amin'ny Fitaovana Rehetra</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Ampiasao ny SaaSConnect amin'ny solosaina na finday. Fomba fijery iray, fifehezana tanteraka.</p>
+                    </div>
+
+                    <!-- Feature Card 6 -->
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 group">
+                        <div class="text-primary-600 dark:text-primary-400 text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-gray-50">Fanohanana Mavitrika</h3>
+                        <p class="text-gray-700 dark:text-gray-300">Ekipa mpanohana vonona hihaino sy hamaha ny olanao. Tsy hamela anao irery izahay.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Vahaolana Ho an'ny sehatra samihafa (Solutions Section) -->
+        <section id="solutions" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-950 animate-on-scroll">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-gray-50">
+                        <span class="text-gradient">Vahaolana</span> Natao ho An'ny Orinasanao
+                     </h2>
+                    <p class="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+                        Na kely na lehibe ny orinasanao, manana vahaolana mifanaraka amin'ny filanao izahay.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Solution Card 1 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1556740738-b676b05531b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny Varotra" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fanatsarana ny Varotra sy Marketing</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Ampitomboy ny fivarotana sy ny fandraisana mpanjifa amin'ny fitaovana marketing mandroso sy CRM mahomby.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Solution Card 2 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny Fitantanam-bola" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fitantanam-bola sy Kaonty</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Mora ny mitantana ny vola miditra sy mivoaka, manao teti-bola, ary manara-maso ny trosa.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Solution Card 3 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1599658880562-b912a20b080b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny Fitantanana tetikasa" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fitantanana Tetikasa sy Fiaraha-miasa</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Atreho ny tetikasanao amin'ny fomba mandeha tsara sy mahomby, miaraka amin'ny ekipa miray hina.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Solution Card 4 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1507207611896-cd4467a94202?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny Mpanjifa" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fanohanana Mpanjifa</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Ovay ho traikefa tsara ho an'ny mpanjifa ny fanohananao miaraka amin'ny fitaovana maoderina.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Solution Card 5 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1598257006626-d621b8d41fe3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny HR" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fitantanana ny Lohatenin'Olombelona (HR)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Ahatsara ny fizotry ny HR, toy ny fampindramana, ny karama, ary ny fitazonana mpiasa.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Solution Card 6 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group">
+                        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="Vahaolana ho an'ny Fandraisana fanapahan-kevitra" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-50">Fomba Fandraisana Fanapahan-kevitra Hafa</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Fitaovana mandroso manampy anao handray fanapahan-kevitra tsara miorina amin'ny angon-drakitra marina.</p>
+                            <a href="javascript:void(0)" class="mt-4 inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                                Hahafantatra Bebe Kokoa <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Momba Anay (About Section) -->
+        <section id="about" class="py-16 md:py-24 bg-white dark:bg-gray-800 relative animate-on-scroll">
+            <div class="container mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div class="lg:w-1/2">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="SaaSConnect Team" class="rounded-xl shadow-2xl w-full h-auto object-cover transform hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-gray-50 leading-tight">
+                        Ny <span class="text-gradient">Tanteraka</span> Sy ny Fahitana Anay
+                    </h2>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                        Ao amin'ny SaaSConnect, mino izahay fa ny teknolojia dia tokony ho fitaovana hanampiana ny orinasa hivoatra, fa tsy hanahirana. Izany no antony mamorona vahaolana SaaS tsotra nefa mahery vaika izahay, natao hanamora ny asan'ny olona sy orinasa.
+                    </p>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                        Ny tanjonay dia ny hanome hery ireo mpandraharaha sy ekipa hiditra amin'ny fitaovana ilainy mba hahomby, na aiza na aiza misy azy ireo, na oviana na oviana. Miaraka amin'ny ekipanay za-draharaha sy ny fanoloran-tenanay amin'ny fanavaozana, manaja ny filàn'ny mpanjifa izahay amin'ny alalan'ny fanohanana miavaka sy ny vokatra kalitao.
+                    </p>
+                    <a href="javascript:void(0)" class="inline-flex items-center bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors duration-300 shadow-md transform hover:scale-105">
+                        Fantaro ny Ekipanay <i class="fas fa-users ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Vidin'ny Serivisy (Pricing Section) -->
+        <section id="pricing" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-950 animate-on-scroll">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-gray-50">
+                        Ny <span class="text-gradient">Vidin'ny Serivisy</span> Mifandraika Amin'ny Filanao
+                    </h2>
+                    <p class="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+                        Fidio ny drafitra mifandraika indrindra amin'ny tanjona sy ny teti-bolan'ny orinasanao. Tsy misy fanekena an-terivozona, afaka manafoana amin'ny fotoana rehetra.
+                    </p>
+                </div>
+
+                <!-- Price Toggles -->
+                <div class="flex justify-center mb-12">
+                    <div class="inline-flex bg-gray-200 dark:bg-gray-700 rounded-full p-1 shadow-inner">
+                        <button id="toggleMonthly" class="px-6 py-2 rounded-full text-gray-800 dark:text-gray-200 font-semibold focus:outline-none transition-all duration-300 bg-primary-600 text-white dark:bg-primary-400 dark:text-gray-900">
+                            Isam-bolana
+                        </button>
+                        <button id="toggleAnnually" class="px-6 py-2 rounded-full text-gray-700 dark:text-gray-300 font-semibold focus:outline-none transition-all duration-300">
+                            Isan-taona <span class="text-primary-600 dark:text-primary-400 text-sm ml-2">(Vonjeo 20%)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="pricingCards" class="grid lg:grid-cols-3 gap-8 justify-center">
+                    <!-- Pricing Card 1: Basic -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 flex flex-col transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Basic</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Ho an'ny vao manomboka sy orinasa kely.</p>
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-5xl font-extrabold text-primary-600 dark:text-primary-400" data-monthly="€19" data-annually="€15">€19</span>
+                            <span class="text-xl text-gray-600 dark:text-gray-400 ml-2">/volana</span>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-grow">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Mpiasa 5</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Dashboard fototra</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>5GB fitehirizana</li>
+                            <li class="flex items-center text-gray-500 dark:text-gray-400"><i class="fas fa-times-circle text-red-500 mr-3"></i>Famakafakana mandroso</li>
+                            <li class="flex items-center text-gray-500 dark:text-gray-400"><i class="fas fa-times-circle text-red-500 mr-3"></i>Fanohanana 24/7</li>
+                        </ul>
+                        <button onclick="openModal('signupModal')" class="mt-auto bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 shadow-md">
+                            Fidio ny Basic
+                        </button>
+                    </div>
+
+                    <!-- Pricing Card 2: Pro (Featured) -->
+                    <div class="bg-primary-600 dark:bg-primary-700 text-white rounded-xl shadow-xl p-8 flex flex-col transform scale-105 shadow-primary-500/50 relative border-4 border-yellow-400">
+                        <div class="absolute -top-3 right-4 bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full capitalize rotate-3">
+                            Malaza indrindra
+                        </div>
+                        <h3 class="text-3xl font-bold mb-4">Pro</h3>
+                        <p class="mb-6 opacity-90">Ho an'ny orinasa mitombo.</p>
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-5xl font-extrabold" data-monthly="€49" data-annually="€39">€49</span>
+                            <span class="text-xl opacity-90 ml-2">/volana</span>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-grow">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-yellow-300 mr-3"></i>Mpiasa 20</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-yellow-300 mr-3"></i>Dashboard mandroso</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-yellow-300 mr-3"></i>50GB fitehirizana</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-yellow-300 mr-3"></i>Famakafakana mandroso</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-yellow-300 mr-3"></i>Fanohanana maimaika</li>
+                        </ul>
+                        <button onclick="openModal('signupModal')" class="mt-auto bg-white hover:bg-gray-100 text-primary-600 font-bold py-3 px-6 rounded-lg transition-colors duration-300 shadow-md">
+                            Fidio ny Pro
+                        </button>
+                    </div>
+
+                    <!-- Pricing Card 3: Enterprise -->
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-xl p-8 flex flex-col transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Enterprise</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Vahaolana manokana ho an'ny orinasa lehibe.</p>
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-5xl font-extrabold text-primary-600 dark:text-primary-400" data-monthly="€99" data-annually="€79">€99</span>
+                            <span class="text-xl text-gray-600 dark:text-gray-400 ml-2">/volana</span>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-grow">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Mpiasa tsy voafetra</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Dashboard namboarina</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Fitehirizana tsy voafetra</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Famakafakana mandroso & AI</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>Fanohanana 24/7 + manager manokana</li>
+                        </ul>
+                        <button onclick="openModal('signupModal')" class="mt-auto bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 shadow-md">
+                            Fidio ny Enterprise
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Fanontaniany Matetika (FAQ Section) -->
+        <section id="faq" class="py-16 md:py-24 bg-white dark:bg-gray-800 animate-on-scroll">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-900 dark:text-gray-50">
+                    Fanontaniana Matetika (<span class="text-gradient">FAQ</span>)
+                </h2>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <!-- FAQ Item 1 -->
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-sm p-5 cursor-pointer" onclick="toggleAccordion(this)">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Ahoana no hanombohako amin'ny SaaSConnect?</h3>
+                            <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400 transform transition-transform duration-300"></i>
+                        </div>
+                        <div class="accordion-content mt-3 text-gray-700 dark:text-gray-300 hidden">
+                            Afaka manomboka avy hatrany ianao amin'ny fisoratana anarana amin'ny famandrihana maimaim-poana. Tsy misy takiana carte de crédit ary afaka manomboka mampiasa ny sehatra ianao ao anatin'ny minitra vitsy.
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-sm p-5 cursor-pointer" onclick="toggleAccordion(this)">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Azo atao ve ny manamboatra ny drafitra ho an'ny orinasa manokana?</h3>
+                            <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400 transform transition-transform duration-300"></i>
+                        </div>
+                        <div class="accordion-content mt-3 text-gray-700 dark:text-gray-300 hidden">
+                            Eny, manana safidy namboarina ho an'ny orinasa lehibe na manana filàna manokana izahay. Mifandraisa amin'ny ekipan'ny varotra anay mba hahafantatra bebe kokoa.
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-sm p-5 cursor-pointer" onclick="toggleAccordion(this)">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Ahoana no ahazoana fanohanana raha sendra olana aho?</h3>
+                            <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400 transform transition-transform duration-300"></i>
+                        </div>
+                        <div class="accordion-content mt-3 text-gray-700 dark:text-gray-300 hidden">
+                            Manana ekipan'ny fanohanana mavitrika izahay izay azo ifandraisana amin'ny chat mivantana, mailaka, na telefaona. Ny drafitra "Pro" sy "Enterprise" dia manana fanohanana maimaika.
+                        </div>
+                    </div>
+
+                     <!-- FAQ Item 4 -->
+                     <div class="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-sm p-5 cursor-pointer" onclick="toggleAccordion(this)">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Ahoana ny fiarovanao ny angona?</h3>
+                            <i class="fas fa-chevron-down text-gray-600 dark:text-gray-400 transform transition-transform duration-300"></i>
+                        </div>
+                        <div class="accordion-content mt-3 text-gray-700 dark:text-gray-300 hidden">
+                            Ny fiarovana ny angon-drakitrao no laharam-pahamehanay. Mampiasa protocols fiarovana (encryption, firewalls) mahery vaika izahay, ary manaraka ny fenitra iraisam-pirenena toy ny GDPR sy ISO 27001.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fizarana Antsoy Olona Hanao Hetsika (Call to Action) -->
+        <section class="py-16 md:py-24 bg-primary-600 dark:bg-primary-800 text-white animate-on-scroll">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Vonona ny Handray ny Dingana Manaraka ve Ianao?
+                </h2>
+                <p class="text-xl max-w-3xl mx-auto mb-10 opacity-90">
+                    Atombohy anio ny dianao mankany amin'ny fahitana sy fahombiazana tsara kokoa. Andramo maimaim-poana ny SaaSConnect.
+                </p>
+                <a href="javascript:void(0)" onclick="openModal('signupModal')" class="bg-white hover:bg-gray-100 text-primary-700 font-bold py-4 px-10 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    Manomboka Maimaim-poana Ankehitriny! <i class="fas fa-bolt ml-2"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Fifandraisana (Contact Section) -->
+        <section id="contact" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-950 animate-on-scroll">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-gray-50">
+                        <span class="text-gradient">Mifandraisa</span> Aminay
+                     </h2>
+                    <p class="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+                        Manana fanontaniana ve ianao? Te hianatra bebe kokoa? Fenoy ny taratasy eto ambany.
+                    </p>
+                </div>
+
+                <div class="max-w-lg mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <form onsubmit="event.preventDefault(); validateContactForm()">
+                        <div class="mb-5">
+                            <label for="name" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Anarana Feno</label>
+                            <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" placeholder="Anaranao manontolo" required>
+                            <p class="text-red-500 text-xs italic mt-2 hidden" id="nameError">Mila ny anaranao feno.</p>
+                        </div>
+                        <div class="mb-5">
+                            <label for="email" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Adiresy Mailaka</label>
+                            <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" placeholder="mailakao@ohatra.com" required>
+                            <p class="text-red-500 text-xs italic mt-2 hidden" id="emailError">Mila adiresy mailaka marina.</p>
+                        </div>
+                        <div class="mb-5">
+                            <label for="company" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Orinasanao (tsy voatery)</label>
+                            <input type="text" id="company" name="company" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" placeholder="Anaran'ny orinasanao">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Hafatra</label>
+                            <textarea id="message" name="message" rows="5" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" placeholder="Soraty ny hafatrao eto..." required></textarea>
+                            <p class="text-red-500 text-xs italic mt-2 hidden" id="messageError">Mila manoratra hafatra ianao.</p>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg focus:outline-none focus:shadow-outline transition-colors duration-300 shadow-md">
+                                Alefaso ny Hafatra
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-gray-200 py-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Logo sy Fampahafantarana -->
+            <div class="col-span-1 md:col-span-1">
+                <a href="#home" class="flex items-center space-x-2 mb-4">
+                    <i class="fas fa-rocket text-3xl text-primary-400"></i>
+                    <span class="text-2xl font-bold">SaaSConnect</span>
+                </a>
+                <p class="text-gray-400 text-sm">
+                    Manampy ny orinasa hivoatra amin'ny alalan'ny vahaolana SaaS maoderina sy azo antoka.
+                </p>
+                <div class="flex space-x-4 mt-6">
+                    <a href="javascript:void(0)" class="text-gray-400 hover:text-primary-400 transition-colors"><i class="fab fa-facebook-f text-lg"></i></a>
+                    <a href="javascript:void(0)" class="text-gray-400 hover:text-primary-400 transition-colors"><i class="fab fa-twitter text-lg"></i></a>
+                    <a href="javascript:void(0)" class="text-gray-400 hover:text-primary-400 transition-colors"><i class="fab fa-linkedin-in text-lg"></i></a>
+                    <a href="javascript:void(0)" class="text-gray-400 hover:text-primary-400 transition-colors"><i class="fab fa-instagram text-lg"></i></a>
+                </div>
+            </div>
+
+            <!-- Rohy Haingana -->
+            <div>
+                <h4 class="text-xl font-semibold mb-4 text-white">Rohy Haingana</h4>
+                <ul class="space-y-2">
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Endrika Manokana</a></li>
+                    <li><a href="#solutions" class="text-gray-400 hover:text-white transition-colors">Vahaolana</a></li>
+                    <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">Momba Anay</a></li>
+                    <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Vidin'ny Serivisy</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Fifandraisana</a></li>
+                </ul>
+            </div>
+
+            <!-- Vahaolana -->
+            <div>
+                <h4 class="text-xl font-semibold mb-4 text-white">Vahaolana Manokana</h4>
+                <ul class="space-y-2">
+                    <li><a href="javascript:void(0)" class="text-gray-400 hover:text-white transition-colors">CRM sy Varotra</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-400 hover:text-white transition-colors">Fitantanam-bola</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-400 hover:text-white transition-colors">HR sy Payroll</a></li>
+                    <li><a href="javascript:void(0)" class="text-gray-400 hover:text-white transition-colors">Tetikasa sy Fiaraha-miasa</a></li>
+                </ul>
+            </div>
+
+            <!-- Fifandraisana -->
+            <div>
+                <h4 class="text-xl font-semibold mb-4 text-white">Mifandraisa Aminay</h4>
+                <address class="space-y-2 not-italic text-sm">
+                    <p class="flex items-center"><i class="fas fa-map-marker-alt mr-3 text-primary-400"></i>123 Lalana Digital, Antananarivo, Madagasikara</p>
+                    <p class="flex items-center"><i class="fas fa-phone mr-3 text-primary-400"></i>+261 32 123 45</p>
+                    <p class="flex items-center"><i class="fas fa-envelope mr-3 text-primary-400"></i>info@saasconnect.mg</p>
+                    <p class="flex items-center"><i class="fas fa-clock mr-3 text-primary-400"></i>Alatsinainy-Zoma: 8:00 - 17:00</p>
+                </address>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+            &copy; 2023 SaaSConnect. Zo rehetra voatokana.
+        </div>
+    </footer>
+
+
+    <!-- Modal ho an'ny fisoratana anarana (Signup Modal) -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content dark:bg-gray-800">
+            <span class="close-button" onclick="closeModal('signupModal')">&times;</span>
+            <div class="text-center mb-6">
+                <i class="fas fa-user-plus text-primary-600 dark:text-primary-400 text-5xl mb-4"></i>
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Manomboka Maimaim-poana Ankehitriny!</h3>
+                <p class="text-gray-700 dark:text-gray-300">Fenoy ity taratasy ity raha te hanomboka ny andramanao maimaim-poana.</p>
+            </div>
+            <form onsubmit="event.preventDefault(); validateSignupForm();">
+                <div class="mb-4">
+                    <input type="text" id="signupName" placeholder="Anarana feno" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" required>
+                    <p class="text-red-500 text-xs italic mt-2 hidden" id="signupNameError">Mila ny anaranao feno.</p>
+                </div>
+                <div class="mb-4">
+                    <input type="email" id="signupEmail" placeholder="Adiresy mailaka" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" required>
+                    <p class="text-red-500 text-xs italic mt-2 hidden" id="signupEmailError">Mila adiresy mailaka marina.</p>
+                </div>
+                <div class="mb-6">
+                    <input type="password" id="signupPassword" placeholder="Teny miafina" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-200" required>
+                    <p class="text-red-500 text-xs italic mt-2 hidden" id="signupPasswordError">Mila teny miafina farafahakeliny 6 litera.</p>
+                </div>
+                <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg w-full transition-colors duration-300 shadow-md">
+                    Misoratra Anarana
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal fahombiazana (Success Modal) -->
+    <div id="successModal" class="modal">
+        <div class="modal-content dark:bg-gray-800">
+            <span class="close-button" onclick="closeModal('successModal')">&times;</span>
+            <div class="text-center">
+                <i class="fas fa-check-circle text-green-500 text-6xl mb-6 animate-pulse"></i>
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-3">Fahombiazana!</h3>
+                <p class="text-gray-700 dark:text-gray-300 text-lg" id="successMessage">Ny hafatrao dia voaray soa aman-tsara. Hifandray tsy ho ela izahay!</p>
+                <button onclick="closeModal('successModal')" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-lg mt-8 transition-colors duration-300">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Fampandehanana ny Dark Mode
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const htmlElement = document.documentElement;
+
+        function setDarkMode(isDark) {
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+            updateDarkModeIcons();
+        }
+
+        function updateDarkModeIcons() {
+            const moonIcons = document.querySelectorAll('.fa-moon');
+            const sunIcons = document.querySelectorAll('.fa-sun');
+
+            if (htmlElement.classList.contains('dark')) {
+                moonIcons.forEach(icon => icon.classList.remove('hidden'));
+                sunIcons.forEach(icon => icon.classList.add('hidden'));
+            } else {
+                moonIcons.forEach(icon => icon.classList.add('hidden'));
+                sunIcons.forEach(icon => icon.classList.remove('hidden'));
+            }
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            setDarkMode(!htmlElement.classList.contains('dark'));
+        });
+        darkModeToggleMobile.addEventListener('click', () => {
+            setDarkMode(!htmlElement.classList.contains('dark'));
+        });
+
+        // Fijerena ny préférence teo aloha avy amin'ny localStorage na système
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+
+        // Hamburger Menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('opacity-0');
+            mobileMenu.classList.toggle('-translate-y-full');
+            mobileMenu.classList.toggle('opacity-100');
+            mobileMenu.classList.toggle('translate-y-0');
+        }
+
+        hamburgerBtn.addEventListener('click', toggleMobileMenu);
+
+        // Smooth Scroll ho an'ny Rohy Navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Accordion ho an'ny FAQ
+        function toggleAccordion(element) {
+            const content = element.querySelector('.accordion-content');
+            const icon = element.querySelector('.fa-chevron-down');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Pricing Toggle (Isam-bolana/Isan-taona)
+        const toggleMonthly = document.getElementById('toggleMonthly');
+        const toggleAnnually = document.getElementById('toggleAnnually');
+        const pricingCards = document.querySelectorAll('#pricingCards [data-monthly]');
+
+        toggleMonthly.addEventListener('click', () => {
+            toggleMonthly.classList.add('bg-primary-600', 'text-white', 'dark:bg-primary-400', 'dark:text-gray-900');
+            toggleMonthly.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            toggleAnnually.classList.remove('bg-primary-600', 'text-white', 'dark:bg-primary-400', 'dark:text-gray-900');
+            toggleAnnually.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+
+            pricingCards.forEach(card => {
+                const priceSpan = card.querySelector('span:first-of-type');
+                priceSpan.textContent = card.dataset.monthly;
+                card.querySelector('span:last-of-type').textContent = '/volana';
+            });
+        });
+
+        toggleAnnually.addEventListener('click', () => {
+            toggleAnnually.classList.add('bg-primary-600', 'text-white', 'dark:bg-primary-400', 'dark:text-gray-900');
+            toggleAnnually.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            toggleMonthly.classList.remove('bg-primary-600', 'text-white', 'dark:bg-primary-400', 'dark:text-gray-900');
+            toggleMonthly.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+
+            pricingCards.forEach(card => {
+                const priceSpan = card.querySelector('span:first-of-type');
+                priceSpan.textContent = card.dataset.annually;
+                card.querySelector('span:last-of-type').textContent = '/taona';
+            });
+        });
+
+        // Modals
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Manakana ny scroll an'ny body
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = ''; // Mamerina ny scroll an'ny body
+        }
+
+        // Mikatona ny modal rehefa tsindriana ivelan'ny atiny
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Form Validation (Contact Form)
+        function validateContactForm() {
+            const name = document.getElementById('name');
+            const email = document.getElementById('email');
+            const message = document.getElementById('message');
+            let isValid = true;
+
+            // Fanamarinana ny anarana
+            if (name.value.trim() === '') {
+                document.getElementById('nameError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').classList.add('hidden');
+            }
+
+            // Fanamarinana ny mailaka
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value.trim())) {
+                document.getElementById('emailError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').classList.add('hidden');
+            }
+
+            // Fanamarinana ny hafatra
+            if (message.value.trim() === '') {
+                document.getElementById('messageError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('messageError').classList.add('hidden');
+            }
+
+            if (isValid) {
+                // Alefaso ny hafatra na sokafy ny modal fahombiazana
+                document.getElementById('successMessage').textContent = "Misaotra amin'ny hafatrao! Hifandray tsy ho ela izahay.";
+                openModal('successModal');
+
+                // Azo atao koa ny manadio ny form
+                name.value = '';
+                email.value = '';
+                document.getElementById('company').value = '';
+                message.value = '';
+            }
+        }
+
+        // Form Validation (Signup Form)
+        function validateSignupForm() {
+            const signupName = document.getElementById('signupName');
+            const signupEmail = document.getElementById('signupEmail');
+            const signupPassword = document.getElementById('signupPassword');
+            let isValid = true;
+
+            // Fanamarinana ny anarana
+            if (signupName.value.trim() === '') {
+                document.getElementById('signupNameError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('signupNameError').classList.add('hidden');
+            }
+
+            // Fanamarinana ny mailaka
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(signupEmail.value.trim())) {
+                document.getElementById('signupEmailError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('signupEmailError').classList.add('hidden');
+            }
+
+            // Fanamarinana ny teny miafina
+            if (signupPassword.value.trim().length < 6) {
+                document.getElementById('signupPasswordError').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('signupPasswordError').classList.add('hidden');
+            }
+
+            if (isValid) {
+                // Sokafy ny modal fahombiazana ary akato ny modal fisoratana anarana
+                closeModal('signupModal');
+                document.getElementById('successMessage').textContent = "Fisoraatana anarana vita soa aman-tsara! Afaka manomboka mampiasa ny sehatra ianao izao.";
+                openModal('successModal');
+
+                // Azo atao koa ny manadio ny form
+                signupName.value = '';
+                signupEmail.value = '';
+                signupPassword.value = '';
+            }
+        }
+
+        // Animation amin'ny scroll
+        const animateOnScrollElements = document.querySelectorAll('.animate-on-scroll');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Azo esorina ity raha te hitohy ny animation (tsy hiverimberina intsony)
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 }); // Miharihary rehefa 10% amin'ny element no hita
+
+        animateOnScrollElements.forEach(element => {
+            observer.observe(element);
+        });
+
+    </script>
+
+<div id="devwebia-badge" style="position:fixed;bottom:14px;right:14px;z-index:2147483647;background:#0f172a;color:#fff;padding:8px 12px;border-radius:10px;font-family:system-ui,sans-serif;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(0,0,0,.35);">
+  <a href="https://ai-web-craft-99.lovable.app/?ref=ce037730-d04a-4049-8c86-720baf699d51" target="_blank" rel="noopener" style="color:#fff;text-decoration:none;display:flex;align-items:center;gap:6px;">
+    <span style="background:linear-gradient(135deg,#8b5cf6,#6366f1);padding:2px 6px;border-radius:5px;font-weight:800;letter-spacing:.3px;">DW</span>
+    <span>Nosoratan'i <b>DEVWEBIA</b></span>
+  </a>
+  <button aria-label="Hidio" onclick="this.parentElement.remove();try{localStorage.setItem('devwebia-hide','1')}catch(e){}" style="background:transparent;border:0;color:#94a3b8;cursor:pointer;font-size:16px;line-height:1;padding:0 2px;">×</button>
+</div>
+<script>try{if(localStorage.getItem('devwebia-hide')==='1'){var _b=document.getElementById('devwebia-badge');_b&&_b.remove();}}catch(e){}</script>
+</body>
+</html>
